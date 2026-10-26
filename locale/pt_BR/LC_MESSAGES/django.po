@@ -1,0 +1,307 @@
+msgid ""
+msgstr "Content-Type: text/plain; charset=UTF-8
+Language: pt_BR
+"
+
+msgid "%(full_result_count)s total"
+msgstr "%(full_result_count)s no total"
+
+msgid "(no comment exists)"
+msgstr "(sem comentário)"
+
+msgid "Add new item"
+msgstr "Adicionar novo item"
+
+msgid "Add row"
+msgstr "Adicionar linha"
+
+msgid "After you've created a user, you’ll be able to edit more user options."
+msgstr "Depois de criar o usuário, você poderá editar mais opções."
+
+msgid "All applications"
+msgstr "Todos os aplicativos"
+
+msgid "Apply Filters"
+msgstr "Aplicar filtros"
+
+msgid "Are you sure you want to delete the %(object_name)s \"%(escaped_object)s\"? All of the following related items will be deleted:"
+msgstr "Tem certeza de que deseja remover %(object_name)s \"%(escaped_object)s\"? Todos os itens relacionados a seguir também serão removidos:"
+
+msgid "Deleting the %(object_name)s '%(escaped_object)s' would require deleting the following protected related objects:"
+msgstr "Remover %(object_name)s \"%(escaped_object)s\" exigiria remover os seguintes objetos protegidos relacionados:"
+
+msgid "Deleting the %(object_name)s '%(escaped_object)s' would result in deleting related objects, but your account doesn't have permission to delete the following types of objects:"
+msgstr "Remover %(object_name)s \"%(escaped_object)s\" removeria objetos relacionados, mas sua conta não tem permissão para remover os seguintes tipos de objeto:"
+
+msgid "Available shortcuts"
+msgstr "Atalhos disponíveis"
+
+msgid "By %(filter_title)s"
+msgstr "Por %(filter_title)s"
+
+msgid "Cancel"
+msgstr "Cancelar"
+
+msgid "Change History"
+msgstr "Histórico de alterações"
+
+msgid "Changed by"
+msgstr "Alterado por"
+
+msgid "Changelist shortcuts"
+msgstr "Atalhos da listagem"
+
+msgid "Changes"
+msgstr "Alterações"
+
+msgid "Choose file to upload"
+msgstr "Escolha um arquivo para enviar"
+
+msgid "Click to cancel"
+msgstr "Clique para cancelar"
+
+msgid "Click to download"
+msgstr "Clique para baixar"
+
+msgid "Collapse"
+msgstr "Recolher"
+
+msgid "Command tool shortcuts"
+msgstr "Atalhos da busca rápida"
+
+msgid "Comment"
+msgstr "Comentário"
+
+msgid "Create new record"
+msgstr "Criar novo registro"
+
+msgid "Current file"
+msgstr "Arquivo atual"
+
+msgid "Dark"
+msgstr "Escuro"
+
+msgid "Date"
+msgstr "Data"
+
+msgid "Date from"
+msgstr "Data inicial"
+
+msgid "Date to"
+msgstr "Data final"
+
+msgid "Default"
+msgstr "Padrão"
+
+msgid "Edit"
+msgstr "Editar"
+
+msgid "Enter an URL"
+msgstr "Informe uma URL"
+
+msgid "Export"
+msgstr "Exportar"
+
+msgid "False"
+msgstr "Não"
+
+msgid "Field"
+msgstr "Campo"
+
+msgid "Filters"
+msgstr "Filtros"
+
+msgid "Forgotten your password or username?"
+msgstr "Esqueceu sua senha ou nome de usuário?"
+
+msgid "From"
+msgstr "De"
+
+msgid "General"
+msgstr "Geral"
+
+msgid "Global shortcuts"
+msgstr "Atalhos gerais"
+
+msgid "Go back"
+msgstr "Voltar"
+
+msgid "Group"
+msgstr "Grupo"
+
+msgid "Group permissions"
+msgstr "Permissões do grupo"
+
+msgid "Image preview"
+msgstr "Pré-visualização da imagem"
+
+msgid "Import"
+msgstr "Importar"
+
+msgid "Light"
+msgstr "Claro"
+
+msgid "Manage group"
+msgstr "Gerenciar grupo"
+
+msgid "Manage user"
+msgstr "Gerenciar usuário"
+
+msgid "Name"
+msgstr "Nome"
+
+msgid "Navigate"
+msgstr "Navegar"
+
+msgid "New"
+msgstr "Novo"
+
+msgid "New value"
+msgstr "Novo valor"
+
+msgid "Next"
+msgstr "Próximo"
+
+msgid "next"
+msgstr "próximo"
+
+msgid "No data"
+msgstr "Sem dados"
+
+msgid "No results found"
+msgstr "Nenhum resultado encontrado"
+
+msgid "Not enough data."
+msgstr "Dados insuficientes."
+
+msgid "Nothing matched your search"
+msgstr "Nada encontrado na busca"
+
+msgid "Object"
+msgstr "Objeto"
+
+msgid "Object permissions"
+msgstr "Permissões do objeto"
+
+msgid "Old value"
+msgstr "Valor anterior"
+
+msgid "Open command tool"
+msgstr "Abrir busca rápida"
+
+msgid "Open selection"
+msgstr "Abrir selecionado"
+
+msgid "Open selection in new tab"
+msgstr "Abrir selecionado em nova aba"
+
+msgid "Open shortcuts list"
+msgstr "Abrir lista de atalhos"
+
+msgid "Previous"
+msgstr "Anterior"
+
+msgid "previous"
+msgstr "anterior"
+
+msgid "Recent searches"
+msgstr "Buscas recentes"
+
+msgid "Redo"
+msgstr "Refazer"
+
+msgid "Reset filters"
+msgstr "Limpar filtros"
+
+msgid "Reset to default"
+msgstr "Restaurar padrão"
+
+msgid "Return to site"
+msgstr "Voltar ao site"
+
+msgid "Row"
+msgstr "Linha"
+
+msgid "Run the selected action"
+msgstr "Executar a ação selecionada"
+
+msgid "Search apps and models..."
+msgstr "Buscar no painel..."
+
+msgid "Select"
+msgstr "Selecionar"
+
+msgid "Select action"
+msgstr "Selecionar ação"
+
+msgid "Select action to run"
+msgstr "Selecione a ação a executar"
+
+msgid "Select format"
+msgstr "Selecione o formato"
+
+msgid "Select record"
+msgstr "Selecionar registro"
+
+msgid "Select value"
+msgstr "Selecione um valor"
+
+msgid "Submit"
+msgstr "Enviar"
+
+msgid "System"
+msgstr "Sistema"
+
+msgid "This item will be deleted."
+msgstr "Este item será removido."
+
+msgid "This object doesn't have a change history."
+msgstr "Este registro não tem histórico de alterações."
+
+msgid "This object doesn't have a change history. It probably wasn't added via this admin site."
+msgstr "Este registro não tem histórico de alterações. Provavelmente não foi criado por este painel."
+
+msgid "This page yielded into no results."
+msgstr "Esta página não tem resultados."
+
+msgid "To"
+msgstr "Até"
+
+msgid "Toggle dark/light mode"
+msgstr "Alternar tema claro/escuro"
+
+msgid "Toggle filter"
+msgstr "Mostrar/ocultar filtros"
+
+msgid "Toggle password visibility"
+msgstr "Mostrar/ocultar senha"
+
+msgid "Toggle sidebar"
+msgstr "Mostrar/ocultar menu lateral"
+
+msgid "True"
+msgstr "Sim"
+
+msgid "Type to search"
+msgstr "Digite para buscar"
+
+msgid "Undo"
+msgstr "Desfazer"
+
+msgid "Update"
+msgstr "Atualizar"
+
+msgid "User permissions"
+msgstr "Permissões do usuário"
+
+msgid "Value"
+msgstr "Valor"
+
+msgid "Welcome"
+msgstr "Bem-vindo(a)"
+
+msgid "Welcome back to"
+msgstr "Bem-vindo(a) ao"
+
+msgid "You have been successfully logged out from the administration"
+msgstr "Você saiu do painel administrativo."
