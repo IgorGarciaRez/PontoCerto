@@ -1,0 +1,49 @@
+---
+title: PontoCerto - Modelo Entidade-Relacionamento
+---
+erDiagram
+    contas_usuario ||--o{ horas_entrega : "registra (colaborador)"
+    contas_usuario |o--o{ horas_entrega : "assina (gestor)"
+    horas_projeto ||--o{ horas_entrega : "recebe"
+    contas_usuario ||--o{ horas_projeto_membros : "participa"
+    horas_projeto ||--o{ horas_projeto_membros : "tem membros"
+
+    contas_usuario {
+        bigint id PK
+        varchar(150) username UK "login"
+        varchar(128) password "hash"
+        varchar(150) first_name
+        varchar(150) last_name
+        varchar(254) email
+        varchar(20) perfil "COLABORADOR | GESTOR"
+        bool is_active
+        bool is_staff "acesso ao admin"
+        bool is_superuser
+        datetime date_joined
+        datetime last_login
+    }
+
+    horas_projeto {
+        bigint id PK
+        varchar(120) nome
+        varchar(120) cliente
+        bool ativo
+    }
+
+    horas_projeto_membros {
+        bigint id PK
+        bigint projeto_id FK "-> horas_projeto"
+        bigint usuario_id FK "-> contas_usuario"
+    }
+
+    horas_entrega {
+        bigint id PK
+        bigint colaborador_id FK "-> contas_usuario (CASCADE)"
+        bigint projeto_id FK "-> horas_projeto (PROTECT)"
+        date data
+        text descricao
+        decimal(5_2) horas
+        varchar(20) status "PENDENTE | APROVADA | RECUSADA"
+        bigint assinado_por_id FK "-> contas_usuario (SET NULL), nulo"
+        datetime assinado_em "nulo"
+    }

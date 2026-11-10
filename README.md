@@ -48,8 +48,61 @@ locale/   tradução pt-BR dos textos do tema Unfold
 ```
 
 ## Modelagem
+4 tabelas: `contas_usuario`, `horas_projeto`, `horas_projeto_membros` (ligação N:N) e `horas_entrega`.
+Fonte do diagrama: [`docs/diagrama.mmd`](docs/diagrama.mmd) · imagem: [`docs/diagrama.png`](docs/diagrama.png).
+
+```mermaid
+erDiagram
+    contas_usuario ||--o{ horas_entrega : "registra (colaborador)"
+    contas_usuario |o--o{ horas_entrega : "assina (gestor)"
+    horas_projeto ||--o{ horas_entrega : "recebe"
+    contas_usuario ||--o{ horas_projeto_membros : "participa"
+    horas_projeto ||--o{ horas_projeto_membros : "tem membros"
+
+    contas_usuario {
+        bigint id PK
+        varchar(150) username UK "login"
+        varchar(128) password "hash"
+        varchar(150) first_name
+        varchar(150) last_name
+        varchar(254) email
+        varchar(20) perfil "COLABORADOR | GESTOR"
+        bool is_active
+        bool is_staff "acesso ao admin"
+        bool is_superuser
+        datetime date_joined
+        datetime last_login
+    }
+
+    horas_projeto {
+        bigint id PK
+        varchar(120) nome
+        varchar(120) cliente
+        bool ativo
+    }
+
+    horas_projeto_membros {
+        bigint id PK
+        bigint projeto_id FK "-> horas_projeto"
+        bigint usuario_id FK "-> contas_usuario"
+    }
+
+    horas_entrega {
+        bigint id PK
+        bigint colaborador_id FK "-> contas_usuario (CASCADE)"
+        bigint projeto_id FK "-> horas_projeto (PROTECT)"
+        date data
+        text descricao
+        decimal(5_2) horas
+        varchar(20) status "PENDENTE | APROVADA | RECUSADA"
+        bigint assinado_por_id FK "-> contas_usuario (SET NULL), nulo"
+        datetime assinado_em "nulo"
+    }
 ```
-Usuario N─N Projeto        (membros do projeto)
-Usuario 1─N Entrega N─1 Projeto
-Usuario 1─N Entrega        (gestor que assinou)
-```
+
+| Relacionamento | Cardinalidade | Regra |
+|---|---|---|
+| Usuário → Entrega (colaborador) | 1:N | apagar usuário apaga suas entregas (CASCADE) |
+| Usuário → Entrega (assinado_por) | 0..1:N | apagar gestor mantém a entrega, campo vira nulo (SET NULL) |
+| Projeto → Entrega | 1:N | não é possível apagar projeto com entregas (PROTECT) |
+| Usuário ↔ Projeto | N:N | via `horas_projeto_membros` |
