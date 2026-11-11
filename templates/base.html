@@ -1,0 +1,99 @@
+{% extends "unfold/layouts/skeleton.html" %}
+{# Mesmo layout do admin (Unfold): barra lateral, cabeçalho e conteúdo. CSS, Alpine e HTMX vêm do próprio Unfold. #}
+
+{% block title %}{{ title }} | {{ site_title }}{% endblock %}
+
+{% block base %}
+<div id="page" class="flex max-w-full min-h-screen">
+    <div class="relative z-60">
+        <div class="fixed xl:relative" x-show="sidebarOpen" x-bind:style="`width: ${sidebarWidth}px`">
+            <div class="bg-base-50 relative z-30 dark:bg-base-900">
+                <div id="nav-sidebar" class="bg-base-50 border-e border-base-200 bottom-0 fixed max-h-screen top-0 dark:border-base-800 dark:bg-base-900" x-bind:style="`width: ${sidebarWidth}px`">
+                    <nav id="nav-sidebar-inner" class="bg-base-50 flex flex-col min-h-screen dark:text-font-default-dark dark:bg-base-950/20">
+                        <div class="border-b border-base-200 flex gap-3 items-center h-[65px] mb-4 dark:border-base-800 px-3">
+                            <div class="bg-transparent flex font-semibold gap-3 grow min-w-0 h-[64px] items-center px-3">
+                                <a href="{% url 'inicio' %}" class="bg-primary-600 flex h-[38px] items-center justify-center rounded-default shrink-0 text-white text-xs w-[38px]">
+                                    <span class="material-symbols-outlined md-18">schedule</span>
+                                </a>
+                                <div class="flex flex-col grow justify-center min-w-0">
+                                    <div class="text-important tracking-tight *:truncate xl:text-sm"><a href="{% url 'inicio' %}">{{ site_header }}</a></div>
+                                    <div class="font-normal text-subtle text-xs truncate">{{ site_subheader }}</div>
+                                </div>
+                            </div>
+                            <span class="material-symbols-outlined block cursor-pointer h-[18px] xl:hidden! hover:text-base-700 dark:hover:text-base-200" x-on:click="sidebarToggle()">close</span>
+                        </div>
+
+                        <div id="nav-sidebar-apps" class="h-0 grow overflow-auto scrollbar-default-hover">
+                            <ol class="px-6">
+                                <li>
+                                    <h2 class="block font-semibold mb-2 mt-4 text-font-important-light text-sm truncate dark:text-font-important-dark">Entregas</h2>
+                                    <ol class="flex flex-col">
+                                        {% url 'inicio' as url_inicio %}
+                                        <li><a href="{{ url_inicio }}" class="flex items-center h-[38px] -mx-3 px-3 rounded-default truncate hover:text-primary-600 dark:hover:text-primary-500 {% if request.path == url_inicio %}bg-base-100 font-semibold text-primary-600 dark:bg-white/[.06] dark:text-primary-500{% endif %}">Minhas entregas</a></li>
+                                        {% if user.perfil == "GESTOR" %}
+                                            {% url 'assinaturas' as url_assinaturas %}
+                                            <li><a href="{{ url_assinaturas }}" class="flex items-center h-[38px] -mx-3 px-3 rounded-default truncate hover:text-primary-600 dark:hover:text-primary-500 {% if request.path == url_assinaturas %}bg-base-100 font-semibold text-primary-600 dark:bg-white/[.06] dark:text-primary-500{% endif %}">Assinaturas</a></li>
+                                        {% endif %}
+                                    </ol>
+                                </li>
+                                {% if user.is_staff %}
+                                    <li>
+                                        <h2 class="block font-semibold mb-2 mt-4 text-font-important-light text-sm truncate dark:text-font-important-dark">Administração</h2>
+                                        <ol class="flex flex-col">
+                                            <li><a href="{% url 'admin:index' %}" class="flex items-center h-[38px] -mx-3 px-3 rounded-default truncate hover:text-primary-600 dark:hover:text-primary-500">Painel administrativo</a></li>
+                                        </ol>
+                                    </li>
+                                {% endif %}
+                            </ol>
+                        </div>
+
+                        <div class="border-t border-base-200 px-6 py-3 relative dark:border-base-800" x-data="{ openUserLinks: false }">
+                            <nav class="absolute bg-white border border-base-200 flex flex-col leading-none py-1 rounded-default shadow-lg bottom-[73px] left-3 right-3 z-50 dark:bg-base-800 dark:border-base-700" x-cloak x-show="openUserLinks" x-transition x-on:click.outside="openUserLinks = false">
+                                {% include "unfold/helpers/theme_switch.html" %}
+                                <form method="post" action="{% url 'logout' %}" class="mx-1">
+                                    {% csrf_token %}
+                                    <button type="submit" class="bg-none flex cursor-pointer items-center px-3 py-1.5 text-start text-red-700 rounded-default w-full hover:bg-red-100 dark:hover:bg-red-500/20 dark:text-red-400 dark:hover:text-red-400">
+                                        Sair <span class="ml-auto material-symbols-outlined text-red-700 dark:text-red-400">logout</span>
+                                    </button>
+                                </form>
+                            </nav>
+                            <div class="cursor-pointer flex flex-row gap-3 items-center min-h-[64px] -mx-6 -my-3 px-6 py-3 hover:bg-base-100 dark:hover:bg-base-800" x-on:click="openUserLinks = !openUserLinks" x-bind:class="{'bg-base-100 dark:bg-base-800': openUserLinks}">
+                                {% include "unfold/helpers/avatar.html" with user=request.user %}
+                                <div class="flex flex-col select-none min-w-0">
+                                    <div class="font-semibold text-important tracking-tight truncate">{{ user }}</div>
+                                    <div class="text-subtle text-xs truncate">{{ user.get_perfil_display }}</div>
+                                </div>
+                                <span class="material-symbols-outlined ml-auto select-none text-font-default-light dark:text-font-default-dark">unfold_more</span>
+                            </div>
+                        </div>
+                    </nav>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="main" class="bg-white flex flex-col grow min-w-0 dark:bg-base-900">
+        <div class="bg-white border-b border-base-200 mb-4 px-4 z-40 dark:bg-base-900 dark:border-base-800 dark:text-font-default-dark">
+            <div class="container flex items-center h-16 mx-auto py-4">
+                <div class="flex flex-row grow font-semibold items-center min-w-0 me-3">
+                    <span class="cursor-pointer flex flex-row items-center">
+                        <span class="material-symbols-outlined" x-on:click="sidebarToggle()">dock_to_right</span>
+                    </span>
+                    <span class="block bg-base-200 h-5 mx-3 w-px dark:bg-base-700"></span>
+                    <h1 class="overflow-hidden leading-5 text-important flex items-center whitespace-nowrap xl:text-base">{{ title }}</h1>
+                </div>
+            </div>
+        </div>
+
+        <div id="mensagens" class="px-4">
+            <div class="container mx-auto">{% include "unfold/helpers/messages.html" %}</div>
+        </div>
+
+        <div class="@container px-4 pb-4 grow">
+            <div id="content" class="container mx-auto">
+                {% block conteudo %}{% endblock %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

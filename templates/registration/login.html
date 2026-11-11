@@ -1,0 +1,32 @@
+{% extends "unfold/layouts/unauthenticated.html" %}
+{% load unfold %}
+{# Mesma estrutura da tela de login do admin (unfold/admin/login.html) #}
+
+{% block title %}Entrar | {{ site_title }}{% endblock %}
+
+{% block content %}
+    {% include "unfold/helpers/unauthenticated_title.html" with title=site_title subtitle="Bem-vindo ao" %}
+
+    {% include "unfold/helpers/messages.html" %}
+
+    {% if form.errors %}
+        {% include "unfold/helpers/messages/error.html" with error="Usuário ou senha incorretos." %}
+    {% endif %}
+
+    <form method="post">
+        {% csrf_token %}
+        {% include "unfold/helpers/field.html" with field=form.username %}
+        {% include "unfold/helpers/field.html" with field=form.password %}
+        <input type="hidden" name="next" value="{{ next }}">
+
+        {% url 'cadastro' as url_cadastro %}
+        <div class="flex flex-col gap-3 mt-6">
+            {% component "unfold/components/button.html" with submit=1 variant="primary" class="w-full" %}
+                Entrar <span class="material-symbols-outlined relative right-0 transition-all group-hover:-right-1 text-sm">arrow_forward</span>
+            {% endcomponent %}
+            {% component "unfold/components/button.html" with href=url_cadastro variant="secondary" class="w-full" %}
+                Não tem conta? Cadastre-se
+            {% endcomponent %}
+        </div>
+    </form>
+{% endblock %}

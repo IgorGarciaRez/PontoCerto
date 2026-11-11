@@ -1,0 +1,27 @@
+{% extends "unfold/layouts/unauthenticated.html" %}
+{% load unfold %}
+
+{% block title %}Cadastre-se | {{ site_title }}{% endblock %}
+
+{% block content %}
+    {% include "unfold/helpers/unauthenticated_title.html" with title="Cadastre-se" subtitle=site_title %}
+
+    <p class="mb-6 text-subtle">Novas contas entram como colaborador. Um gestor pode alterar o perfil depois.</p>
+
+    <form method="post">
+        {% csrf_token %}
+        {% for field in form %}
+            {% include "unfold/helpers/field.html" with field=field %}
+        {% endfor %}
+
+        {% url 'login' as url_login %}
+        <div class="flex flex-col gap-3 mt-6">
+            {% component "unfold/components/button.html" with submit=1 variant="primary" class="w-full" %}
+                Criar conta
+            {% endcomponent %}
+            {% component "unfold/components/button.html" with href=url_login variant="secondary" class="w-full" %}
+                Já tem conta? Entrar
+            {% endcomponent %}
+        </div>
+    </form>
+{% endblock %}
