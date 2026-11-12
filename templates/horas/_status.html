@@ -1,0 +1,9 @@
+{# Selo de status no mesmo estilo dos labels do Unfold #}
+{% if e.status == "APROVADA" %}
+    {% include "unfold/helpers/label.html" with text=e.get_status_display type="success" %}
+{% elif e.status == "RECUSADA" %}
+    {% include "unfold/helpers/label.html" with text=e.get_status_display type="danger" %}
+{% else %}
+    {% include "unfold/helpers/label.html" with text=e.get_status_display type="warning" %}
+{% endif %}
+{% if e.assinado_por %}<div class="text-subtle text-xs mt-1">por {{ e.assinado_por }}</div>{% endif %}
