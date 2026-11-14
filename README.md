@@ -13,8 +13,18 @@ O gestor assina (aprova) ou recusa cada entrega. O total de horas de cada colabo
 ## Tecnologias
 - Python 3 / Django 6
 - SQLite (banco relacional)
-- Django Admin com tema Unfold (tema claro/escuro, filtros)
-- htmx
+- [Unfold](https://unfoldadmin.com) (construído sobre o framework CSS **Tailwind CSS**) — tema do Django Admin
+  **e** das telas da área do usuário: todas as telas seguem o mesmo visual, responsivo, com tema claro/escuro
+- [HTMX](https://htmx.org) 2 (já incluso no Unfold) — telas atualizam só o trecho que mudou, sem recarregar a página
+
+### Por que não Edge Rendering
+Edge Rendering é gerar o HTML em servidores de borda de uma CDN (Cloudflare Workers, Vercel Edge).
+Esses ambientes só executam JavaScript/WebAssembly e não têm acesso a um banco relacional local;
+o Django precisa de um processo Python e do SQLite/servidor de banco. Usar Edge Rendering exigiria
+reescrever o back-end em outra linguagem e abandonar o Django, que é requisito do trabalho.
+No lugar, a renderização fica no servidor Django e o **HTMX** troca só o fragmento de HTML alterado
+(mesmo ganho de "página que não recarrega inteira"), e a interface usa o **Unfold/Tailwind CSS** em todas
+as telas, que já traz responsividade e tema claro/escuro. CSS e JS são servidos pelo próprio Django (sem CDN).
 
 ## Instalação
 ```bash
@@ -29,9 +39,22 @@ python manage.py popular       # dados de demonstração
 ```bash
 python manage.py runserver
 ```
-Acesse http://127.0.0.1:8000/admin/ — usuários de teste: `admin`, `ana` (gestora), `carla` e `diego` (colaboradores), todos com senha `senha123`.
+- Área do usuário: http://127.0.0.1:8000/ (login, cadastre-se, entregas, assinaturas)
+- Administração: http://127.0.0.1:8000/admin/
+
+Usuários de teste: `admin`, `ana` (gestora), `carla` e `diego` (colaboradores), todos com senha `senha123`.
+
+## Testes
+```bash
+python manage.py test
+```
 
 ## Principais funcionalidades
+- Login, logout e cadastre-se (nova conta entra como colaborador; só o admin promove a gestor)
+- **Colaborador** (`/`): registra, edita e exclui suas entregas sem recarregar a página (HTMX);
+  só escolhe projetos dos quais é membro; entrega assinada fica travada; editar uma recusada reenvia para assinatura
+- **Gestor** (`/assinaturas/`): filtra por status/colaborador, assina ou recusa com um clique e vê o total de horas assinadas por colaborador
+- Tema claro/escuro (menu do usuário na barra lateral, mesma preferência do admin) e layout responsivo
 - Perfis: Gestor e Colaborador
 - CRUD de usuários, projetos e entregas
 - Assinatura (aprovação) das entregas pelo gestor
@@ -40,11 +63,13 @@ Acesse http://127.0.0.1:8000/admin/ — usuários de teste: `admin`, `ana` (gest
 
 ## Estrutura do projeto
 ```
-config/   configurações e URLs do projeto
-contas/   usuários e perfis
-horas/    projetos e entregas
-          management/commands/popular.py  dados de demonstração
-locale/   tradução pt-BR dos textos do tema Unfold
+config/     configurações e URLs do projeto
+contas/     usuários, perfis e cadastro (views.py)
+horas/      projetos e entregas: telas do colaborador e do gestor (views.py), testes (tests.py)
+            management/commands/popular.py  dados de demonstração
+templates/  base.html (layout Unfold: barra lateral, cabeçalho), registration/ (login, cadastro), horas/ (telas)
+docs/       diagrama do banco (diagrama.mmd / diagrama.png)
+locale/     tradução pt-BR dos textos do tema Unfold
 ```
 
 ## Modelagem
