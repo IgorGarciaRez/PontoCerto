@@ -1,0 +1,104 @@
+{% extends "base.html" %}
+{% load unfold %}
+
+{% block conteudo %}
+<div id="painel" class="flex flex-col gap-6" hx-target="#painel" hx-select="#painel" hx-swap="outerHTML" hx-select-oob="#mensagens">
+    {# filtros: qualquer mudança refaz a busca via HTMX, sem botão #}
+    {% component "unfold/components/card.html" with title="Filtros" %}
+        <form method="get" hx-get="{% url 'assinaturas' %}" hx-trigger="change" hx-push-url="true" class="grid gap-4 md:grid-cols-2">
+            <div class="form-field flex flex-col group mb-4">
+                <div class="flex gap-2 flex-col">
+                    <label for="filtro-status" class="block font-semibold text-important whitespace-nowrap">Status</label>
+                    <div class="grow relative max-w-2xl">
+                        <select id="filtro-status" name="status" class="border border-base-200 bg-white font-medium min-w-20 rounded-default shadow-xs text-font-default-light text-sm px-3 py-2 w-full pr-8! max-w-2xl appearance-none text-ellipsis dark:bg-base-900 dark:border-base-700 dark:text-font-default-dark">
+                            <option value="" {% if not status %}selected{% endif %}>Todos</option>
+                            {% for valor, nome in status_choices %}<option value="{{ valor }}" {% if status == valor %}selected{% endif %}>{{ nome }}</option>{% endfor %}
+                        </select>
+                        <span class="material-symbols-outlined absolute pointer-events-none mr-[12px] right-0 text-base-400 top-1/2 dark:text-base-500 -translate-y-1/2">expand_more</span>
+                    </div>
+                </div>
+            </div>
+            <div class="form-field flex flex-col group mb-4">
+                <div class="flex gap-2 flex-col">
+                    <label for="filtro-colaborador" class="block font-semibold text-important whitespace-nowrap">Colaborador</label>
+                    <div class="grow relative max-w-2xl">
+                        <select id="filtro-colaborador" name="colaborador" class="border border-base-200 bg-white font-medium min-w-20 rounded-default shadow-xs text-font-default-light text-sm px-3 py-2 w-full pr-8! max-w-2xl appearance-none text-ellipsis dark:bg-base-900 dark:border-base-700 dark:text-font-default-dark">
+                            <option value="">Todos</option>
+                            {% for u in totais %}<option value="{{ u.pk }}" {% if colaborador == u.pk|stringformat:"s" %}selected{% endif %}>{{ u }}</option>{% endfor %}
+                        </select>
+                        <span class="material-symbols-outlined absolute pointer-events-none mr-[12px] right-0 text-base-400 top-1/2 dark:text-base-500 -translate-y-1/2">expand_more</span>
+                    </div>
+                </div>
+            </div>
+            <noscript><button>Filtrar</button></noscript>
+        </form>
+    {% endcomponent %}
+
+    <div class="overflow-x-auto scrollbar-default border border-base-200 rounded-default shadow-xs bg-white dark:border-base-800 dark:bg-base-900">
+        <table class="border-spacing-none border-separate w-full">
+            <thead>
+                <tr>
+                    <th class="align-middle font-semibold py-2 px-3 text-start text-important whitespace-nowrap" scope="col">Data</th>
+                    <th class="align-middle font-semibold py-2 px-3 text-start text-important whitespace-nowrap" scope="col">Colaborador</th>
+                    <th class="align-middle font-semibold py-2 px-3 text-start text-important whitespace-nowrap" scope="col">Projeto</th>
+                    <th class="align-middle font-semibold py-2 px-3 text-start text-important whitespace-nowrap" scope="col">Descrição</th>
+                    <th class="align-middle font-semibold py-2 px-3 text-start text-important whitespace-nowrap" scope="col">Horas</th>
+                    <th class="align-middle font-semibold py-2 px-3 text-start text-important whitespace-nowrap" scope="col">Status</th>
+                    <th class="px-3" scope="col"></th>
+                </tr>
+            </thead>
+            {% for e in entregas %}
+                <tbody class="{% cycle '' 'bg-base-50 dark:bg-white/[.02]' %}">
+                    <tr>
+                        <td class="align-middle border-t border-base-200 px-3 py-2 whitespace-nowrap dark:border-base-800">{{ e.data|date:"d/m/Y" }}</td>
+                        <td class="align-middle border-t border-base-200 px-3 py-2 dark:border-base-800">{{ e.colaborador }}</td>
+                        <td class="align-middle border-t border-base-200 px-3 py-2 dark:border-base-800">{{ e.projeto }}</td>
+                        <td class="align-middle border-t border-base-200 px-3 py-2 dark:border-base-800">{{ e.descricao }}</td>
+                        <td class="align-middle border-t border-base-200 px-3 py-2 dark:border-base-800">{{ e.horas }}</td>
+                        <td class="align-middle border-t border-base-200 px-3 py-2 whitespace-nowrap dark:border-base-800">{% include "horas/_status.html" %}</td>
+                        <td class="align-middle border-t border-base-200 px-3 py-2 dark:border-base-800">
+                            <div class="flex gap-2 justify-end">
+                                {% if e.status != "APROVADA" %}
+                                    <form method="post" action="{% url 'assinar' e.pk 'aprovar' %}" hx-post="{% url 'assinar' e.pk 'aprovar' %}">
+                                        {% csrf_token %}<input type="hidden" name="status" value="{{ status }}">
+                                        <button class="font-medium inline-flex items-center rounded-default whitespace-nowrap cursor-pointer px-2.5 py-1.5 border border-transparent bg-primary-600 text-white hover:bg-primary-600/80">Assinar</button>
+                                    </form>
+                                {% endif %}
+                                {% if e.status != "RECUSADA" %}
+                                    <form method="post" action="{% url 'assinar' e.pk 'recusar' %}" hx-post="{% url 'assinar' e.pk 'recusar' %}">
+                                        {% csrf_token %}<input type="hidden" name="status" value="{{ status }}">
+                                        <button class="font-medium inline-flex items-center rounded-default whitespace-nowrap cursor-pointer px-2.5 py-1.5 border border-transparent bg-red-600 text-white hover:bg-red-600/80">Recusar</button>
+                                    </form>
+                                {% endif %}
+                            </div>
+                        </td>
+                    </tr>
+                </tbody>
+            {% empty %}
+                <tbody><tr><td colspan="7" class="border-t border-base-200 px-3 py-6 text-center text-subtle dark:border-base-800">Nenhuma entrega com esse filtro.</td></tr></tbody>
+            {% endfor %}
+        </table>
+    </div>
+
+    {% component "unfold/components/card.html" with title="Horas assinadas por colaborador" %}
+        <table class="border-spacing-none border-separate w-full">
+            <thead>
+                <tr>
+                    <th class="align-middle font-semibold py-2 px-3 text-start text-important" scope="col">Colaborador</th>
+                    <th class="align-middle font-semibold py-2 px-3 text-start text-important" scope="col">Entregas</th>
+                    <th class="align-middle font-semibold py-2 px-3 text-start text-important" scope="col">Horas assinadas</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for u in totais %}
+                    <tr>
+                        <td class="border-t border-base-200 px-3 py-2 dark:border-base-800">{{ u }}</td>
+                        <td class="border-t border-base-200 px-3 py-2 dark:border-base-800">{{ u.qtd }}</td>
+                        <td class="border-t border-base-200 px-3 py-2 font-semibold text-important dark:border-base-800">{{ u.total|default:0 }} h</td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    {% endcomponent %}
+</div>
+{% endblock %}

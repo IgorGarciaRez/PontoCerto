@@ -1,0 +1,79 @@
+{% extends "base.html" %}
+{% load unfold %}
+
+{% block conteudo %}
+{# hx-target/hx-select/hx-swap são herdados por todos os botões e forms dentro do painel #}
+<div id="painel" class="flex flex-col gap-6" hx-target="#painel" hx-select="#painel" hx-swap="outerHTML" hx-select-oob="#mensagens">
+    <div class="flex flex-col gap-6 lg:flex-row">
+        {% component "unfold/components/card.html" with title="Horas assinadas" class="lg:w-1/3" %}
+            <p class="font-semibold text-2xl text-important tracking-tight">{{ total }} h</p>
+            <p class="text-subtle">Só entregas assinadas pelo gestor contam.</p>
+        {% endcomponent %}
+
+        {% component "unfold/components/card.html" with title=editando|yesno:"Editar entrega,Nova entrega" class="lg:w-2/3" %}
+            {% if not form.fields.projeto.queryset.exists %}
+                <p>Você ainda não participa de nenhum projeto. Peça a um gestor para incluí-lo.</p>
+            {% else %}
+                <form method="post" hx-post="{% if editando %}?editar={{ editando.pk }}{% else %}{% url 'inicio' %}{% endif %}">
+                    {% csrf_token %}
+                    <div class="grid gap-4 md:grid-cols-3">
+                        {% include "unfold/helpers/field.html" with field=form.projeto %}
+                        {% include "unfold/helpers/field.html" with field=form.data %}
+                        {% include "unfold/helpers/field.html" with field=form.horas %}
+                    </div>
+                    {% include "unfold/helpers/field.html" with field=form.descricao %}
+                    <div class="flex gap-3">
+                        {% component "unfold/components/button.html" with submit=1 variant="primary" %}
+                            {% if editando %}Salvar e reenviar{% else %}Registrar{% endif %}
+                        {% endcomponent %}
+                        {% if editando %}
+                            <a href="{% url 'inicio' %}" hx-get="{% url 'inicio' %}" class="font-medium inline-flex items-center gap-1 rounded-default justify-center whitespace-nowrap cursor-pointer px-3 py-2 bg-base-100 border border-transparent text-important dark:bg-base-800 hover:bg-base-100/80 dark:hover:bg-base-800/80">Cancelar</a>
+                        {% endif %}
+                    </div>
+                </form>
+            {% endif %}
+        {% endcomponent %}
+    </div>
+
+    <div class="overflow-x-auto scrollbar-default border border-base-200 rounded-default shadow-xs bg-white dark:border-base-800 dark:bg-base-900">
+        <table class="border-spacing-none border-separate w-full">
+            <thead>
+                <tr>
+                    <th class="align-middle font-semibold py-2 px-3 text-start text-important whitespace-nowrap" scope="col">Data</th>
+                    <th class="align-middle font-semibold py-2 px-3 text-start text-important whitespace-nowrap" scope="col">Projeto</th>
+                    <th class="align-middle font-semibold py-2 px-3 text-start text-important whitespace-nowrap" scope="col">Descrição</th>
+                    <th class="align-middle font-semibold py-2 px-3 text-start text-important whitespace-nowrap" scope="col">Horas</th>
+                    <th class="align-middle font-semibold py-2 px-3 text-start text-important whitespace-nowrap" scope="col">Status</th>
+                    <th class="px-3" scope="col"></th>
+                </tr>
+            </thead>
+            {% for e in entregas %}
+                <tbody class="{% cycle '' 'bg-base-50 dark:bg-white/[.02]' %}">
+                    <tr>
+                        <td class="align-middle border-t border-base-200 px-3 py-2 whitespace-nowrap dark:border-base-800">{{ e.data|date:"d/m/Y" }}</td>
+                        <td class="align-middle border-t border-base-200 px-3 py-2 dark:border-base-800">{{ e.projeto }}</td>
+                        <td class="align-middle border-t border-base-200 px-3 py-2 dark:border-base-800">{{ e.descricao }}</td>
+                        <td class="align-middle border-t border-base-200 px-3 py-2 dark:border-base-800">{{ e.horas }}</td>
+                        <td class="align-middle border-t border-base-200 px-3 py-2 whitespace-nowrap dark:border-base-800">
+                            {% include "horas/_status.html" %}
+                        </td>
+                        <td class="align-middle border-t border-base-200 px-3 py-2 dark:border-base-800">
+                            {% if e.status != "APROVADA" %}
+                                <div class="flex gap-2 justify-end">
+                                    <a href="?editar={{ e.pk }}" hx-get="?editar={{ e.pk }}" class="font-medium inline-flex items-center rounded-default whitespace-nowrap cursor-pointer px-2.5 py-1.5 border border-base-200 bg-white shadow-xs text-important dark:border-base-700 dark:bg-transparent hover:bg-base-100/80 dark:hover:bg-base-800/80">Editar</a>
+                                    <form method="post" action="{% url 'entrega_excluir' e.pk %}" hx-post="{% url 'entrega_excluir' e.pk %}" hx-confirm="Excluir esta entrega?">
+                                        {% csrf_token %}
+                                        <button class="font-medium inline-flex items-center rounded-default whitespace-nowrap cursor-pointer px-2.5 py-1.5 border border-transparent bg-red-600 text-white hover:bg-red-600/80">Excluir</button>
+                                    </form>
+                                </div>
+                            {% endif %}
+                        </td>
+                    </tr>
+                </tbody>
+            {% empty %}
+                <tbody><tr><td colspan="6" class="border-t border-base-200 px-3 py-6 text-center text-subtle dark:border-base-800">Nenhuma entrega registrada.</td></tr></tbody>
+            {% endfor %}
+        </table>
+    </div>
+</div>
+{% endblock %}
